@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package main
+package flow
 
 import (
 	"fmt"
@@ -24,7 +24,7 @@ import (
 	"github.com/cloudwego/eino/schema"
 )
 
-func reportStream(sr *schema.StreamReader[*schema.Message]) {
+func ReportStream(sr *schema.StreamReader[*schema.Message]) {
 	defer sr.Close()
 	defer fmt.Println("\n=== answer end ===")
 	i := 0
@@ -32,6 +32,7 @@ func reportStream(sr *schema.StreamReader[*schema.Message]) {
 
 		message, err := sr.Recv()
 		if err == io.EOF {
+			fmt.Println("totoal words : ", i)
 			return
 		}
 		if err != nil {

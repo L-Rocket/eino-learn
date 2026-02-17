@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package main
+package chatmodel
 
 import (
 	"context"
@@ -25,7 +25,7 @@ import (
 	"github.com/cloudwego/eino/components/model"
 )
 
-func createOpenAIChatModel(ctx context.Context) model.ToolCallingChatModel {
+func CreateOpenAIChatModel(ctx context.Context) model.ToolCallingChatModel {
 	// key := os.Getenv("HUOSHAN_API_KEY")
 	// modelName := "doubao-seed-1-6-lite-251015"
 	// baseURL := "https://ark.cn-beijing.volces.com/api/v3/"

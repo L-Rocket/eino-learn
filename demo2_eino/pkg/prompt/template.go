@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package main
+package prompt
 
 import (
 	"context"
@@ -24,7 +24,7 @@ import (
 	"github.com/cloudwego/eino/schema"
 )
 
-func createTemplate() prompt.ChatTemplate {
+func CreateTemplate() prompt.ChatTemplate {
 	// 创建模板，使用 FString 格式
 	return prompt.FromMessages(schema.FString,
 		// 系统消息模板
@@ -38,8 +38,8 @@ func createTemplate() prompt.ChatTemplate {
 	)
 }
 
-func createMessagesFromTemplate() []*schema.Message {
-	template := createTemplate()
+func CreateMessagesFromTemplate() []*schema.Message {
+	template := CreateTemplate()
 
 	// 使用模板生成消息
 	messages, err := template.Format(context.Background(), map[string]any{

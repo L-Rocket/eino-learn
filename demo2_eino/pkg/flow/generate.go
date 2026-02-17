@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package main
+package flow
 
 import (
 	"context"
@@ -24,7 +24,7 @@ import (
 	"github.com/cloudwego/eino/schema"
 )
 
-func generate(ctx context.Context, llm model.ToolCallingChatModel, in []*schema.Message) *schema.Message {
+func Generate(ctx context.Context, llm model.ToolCallingChatModel, in []*schema.Message) *schema.Message {
 	result, err := llm.Generate(ctx, in)
 	if err != nil {
 		log.Fatalf("llm generate failed: %v", err)
@@ -32,7 +32,7 @@ func generate(ctx context.Context, llm model.ToolCallingChatModel, in []*schema.
 	return result
 }
 
-func stream(ctx context.Context, llm model.ToolCallingChatModel, in []*schema.Message) *schema.StreamReader[*schema.Message] {
+func Stream(ctx context.Context, llm model.ToolCallingChatModel, in []*schema.Message) *schema.StreamReader[*schema.Message] {
 	result, err := llm.Stream(ctx, in)
 	if err != nil {
 		log.Fatalf("llm generate failed: %v", err)

@@ -19,26 +19,36 @@ package main
 import (
 	"context"
 	"log"
+	"sync"
+
+	"GoClawd/demo2_eino/pkg/chatmodel"
+	"GoClawd/demo2_eino/pkg/flow"
+	"GoClawd/demo2_eino/pkg/prompt"
 )
 
 func main() {
 	ctx := context.Background()
-
+	wg := sync.WaitGroup{}
 	// 使用模版创建messages
 	log.Printf("===create messages===\n")
-	messages := createMessagesFromTemplate()
+	messages := prompt.CreateMessagesFromTemplate()
 	log.Printf("messages: %+v\n\n", messages)
 
 	// 创建llm
 	log.Printf("===create llm===\n")
-	cm := createOpenAIChatModel(ctx)
+	cm := chatmodel.CreateOpenAIChatModel(ctx)
 	log.Printf("create llm success\n\n")
 
 	log.Printf("===llm generate===\n")
-	result := generate(ctx, cm, messages)
+	result := flow.Generate(ctx, cm, messages)
 	log.Printf("result: %+v\n\n", result)
 
-	log.Printf("===llm stream generate===\n")
-	streamResult := stream(ctx, cm, messages)
-	reportStream(streamResult)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		log.Printf("===llm stream generate===\n")
+		streamResult := flow.Stream(ctx, cm, messages)
+		flow.ReportStream(streamResult)
+	}()
+	wg.Wait()
 }

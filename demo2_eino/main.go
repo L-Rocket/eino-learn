@@ -23,31 +23,48 @@ import (
 
 	"GoClawd/demo2_eino/pkg/chatmodel"
 	"GoClawd/demo2_eino/pkg/flow"
+	"GoClawd/demo2_eino/pkg/memory"
 	"GoClawd/demo2_eino/pkg/prompt"
+
+	"github.com/cloudwego/eino/schema"
 )
 
 func main() {
 	ctx := context.Background()
 	wg := sync.WaitGroup{}
+
+	// 创建 memory
+	log.Printf("===create memory===\n")
+	mem := memory.NewMemory()
+
 	// 使用模版创建messages
 	log.Printf("===create messages===\n")
 	messages := prompt.CreateMessagesFromTemplate()
-	log.Printf("messages: %+v\n\n", messages)
 
 	// 创建llm
 	log.Printf("===create llm===\n")
 	cm := chatmodel.CreateOpenAIChatModel(ctx)
-	log.Printf("create llm success\n\n")
 
-	log.Printf("===llm generate===\n")
-	result := flow.Generate(ctx, cm, messages)
-	log.Printf("result: %+v\n\n", result)
+	log.Printf("===first turn: llm generate===\n")
+	result := flow.Generate(ctx, cm, mem, messages)
+	log.Printf("result: %+v\n\n", result.Content)
+
+	// 第二轮对话
+	log.Printf("===second turn: create messages===\n")
+	secondMessages := []*schema.Message{
+		schema.UserMessage("我还是觉得很难，能再多鼓励我一下吗？"),
+	}
+	result2 := flow.Generate(ctx, cm, mem, secondMessages)
+	log.Printf("result2: %+v\n\n", result2.Content)
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		log.Printf("===llm stream generate===\n")
-		streamResult := flow.Stream(ctx, cm, messages)
+		log.Printf("===third turn: llm stream generate===\n")
+		thirdMessages := []*schema.Message{
+			schema.UserMessage("谢谢你！"),
+		}
+		streamResult := flow.Stream(ctx, cm, mem, thirdMessages)
 		flow.ReportStream(streamResult)
 	}()
 	wg.Wait()
